@@ -8,6 +8,8 @@ class Point:
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y
+    def __repr__(self):
+        return f"{self.X},{self.Y}"
 
 class Laser:
     def __init__(self, x_pins, y_pins, speed=0.001):
@@ -17,10 +19,10 @@ class Laser:
         self.YPins = y_pins
         GPIO.setmode(GPIO.BCM)
         for i in range(4):
-            GPIO.setup(XPins[i], GPIO.OUT)
-            GPIO.output(XPins[i], False)
-            GPIO.setup(YPins[i], GPIO.OUT)
-            GPIO.output(YPins[i], False)
+            GPIO.setup(self.XPins[i], GPIO.OUT)
+            GPIO.output(self.XPins[i], False)
+            GPIO.setup(self.YPins[i], GPIO.OUT)
+            GPIO.output(self.YPins[i], False)
         self.position = Point(0, 0)
         self.speed = speed
         self.seq = [[1,0,0,1],
@@ -33,10 +35,16 @@ class Laser:
                     [0,0,0,1]]
 
     def MoveAbsolute(self, X, Y):
-        dif_x = self.position.X - X
-        dif_y = self.position.Y - Y
+        print(self.position.X)
+        print(self.position.Y)
+        dif_x = X - self.position.X
+        dif_y = Y - self.position.Y
+        self.position.X = X
+        self.position.Y = Y
         self.MoveRelative(dif_x, dif_y)
     def MoveRelative(self, X, Y):
+        print(X)
+        print(Y)
         absX = abs(X)
         absY = abs(Y)
         xdir = 1
@@ -71,5 +79,3 @@ class Laser:
         for i in range(4):
             GPIO.output(self.XPins[i], False)
             GPIO.output(self.YPins[i], False)
-        self.position.X += X
-        self.position.Y += Y
