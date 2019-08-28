@@ -1,4 +1,3 @@
-from curtsies import Input, FullscreenWindow
 import sys
 import time
 import RPi.GPIO as GPIO
@@ -6,16 +5,16 @@ import RPi.GPIO as GPIO
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-Pins1 = [2, 3, 4, 17]
-Pins2 = [10, 9, 11, 5]
+XPins = [2, 3, 4, 17]
+YPins = [10, 9, 11, 5]
 
 
 
-for pin in Pins1:
+for pin in XPins:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, False)
 
-for pin in Pins2:
+for pin in YPins:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, False)
 
@@ -32,6 +31,52 @@ stepcount = len(Seq)
 
 stepDir = -1
 counter = 0
+
+
+def GoRelative(X, Y, speed=0.005):
+    try:
+        absX = abs(X)
+        absY = abs(Y)
+        if (X < 0):
+            xdir = -1
+        else:
+            xdir = 1
+        if (Y < 0):
+            ydir = -1
+        else:
+            ydir = 1
+        if absX >= absY:
+            bigrange = absX
+        else:
+            bigrange = absY
+        countY = 0
+        countX = 0
+        for i in range(bigrange):
+            for j in range(4):
+                if i < absX:
+                    GPIO.output(XPins[j], Seq[countX][j] == 1)
+                if i < absY:
+                    GPIO.output(YPins[j], Seq[countY][j] == 1)
+            time.sleep(speed)
+            countX += xdir
+            countY += ydir
+            if countX > 7:
+                countX = 0
+            elif countX == -1:
+                countX = 7
+            if countY > 7:
+                countY = 0
+            elif countY == -1:
+                countY = 7
+        for i in range(4):
+            GPIO.output(XPins[i], False)
+            GPIO.output(YPins[i], False)
+    except KeyboardInterrupt:
+        for i in range(4):
+            GPIO.output(XPins[i], False)
+            GPIO.output(YPins[i], False)
+        raise
+
 
 def Move(direction):
     direction = direction.upper()
@@ -64,12 +109,3 @@ def Move(direction):
     for pin in pins:
         GPIO.output(pin, False)
 
-
-for pin in range(4):
-    GPIO.output(Pins1[pin], False)
-    GPIO.output(Pins2[pin], False)
-
-with FullscreenWindow() as window:
-    with Input() as in_gen:
-        for e in in_gen:
-            Move(e)
