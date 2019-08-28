@@ -35,16 +35,12 @@ class Laser:
                     [0,0,0,1]]
 
     def MoveAbsolute(self, X, Y):
-        print(self.position.X)
-        print(self.position.Y)
         dif_x = X - self.position.X
         dif_y = Y - self.position.Y
         self.position.X = X
         self.position.Y = Y
         self.MoveRelative(dif_x, dif_y)
     def MoveRelative(self, X, Y):
-        print(X)
-        print(Y)
         absX = abs(X)
         absY = abs(Y)
         xdir = 1

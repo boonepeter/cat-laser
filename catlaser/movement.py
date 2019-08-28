@@ -6,7 +6,7 @@ YPins = [10, 9, 11, 5]
 
 testlaser = laser.Laser(XPins, YPins, 0.005)
 
-with open("test.csv", "r") as smallcsv:
+with open("test2.csv", "r") as smallcsv:
     for line in smallcsv:
         xy = line.strip().split(',')
         testlaser.MoveAbsolute(int(xy[0]), int(xy[1]))
