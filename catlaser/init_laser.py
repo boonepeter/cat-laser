@@ -17,6 +17,7 @@ class Laser:
         if (len(x_pins) != 4) or (len(y_pins) != 4):
             raise ValueError("Pin length not correct")
         self.Is_Laser_On = False
+        self.height = height
         self.Laser_Pin = laser_pin
         self.X_Pins = x_pins
         self.Y_Pins = y_pins
@@ -70,12 +71,12 @@ class Laser:
             degY = math.degrees(math.atan(hypot / self.height))
         return degX, degY
     def CalcSteps(self, X, Y):
-        newDegX, newDegY = ReturnAngles(X, Y)
+        newDegX, newDegY = self.ReturnAngles(X, Y)
         difX = newDegX - self.Cur_Deg_X
         difY = newDegY - self.Cur_Deg_Y
         stepsX = (difX * 2038) / 360
         stepsY = (difY * 2038) / 360
-        return stepsX, stepsY
+        return int(stepsX), int(stepsY)
     def Move(self, X, Y):
         degx, degy = self.ReturnAngles(X, Y)
         change_x, change_y = self.CalcSteps(degx, degy)
