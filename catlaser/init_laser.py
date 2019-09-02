@@ -12,28 +12,51 @@ class Point:
         return f"{self.X},{self.Y}"
 
 class Laser:
-    def __init__(self, x_pins, y_pins, speed=0.001):
+    def __init__(self, x_pins, y_pins, laser_pin, height=100, speed=0.001):
         if (len(x_pins) != 4) or (len(y_pins) != 4):
             raise ValueError("Pin length not correct")
-        self.XPins = x_pins
-        self.YPins = y_pins
+        self.Is_Laser_On = False
+        self.Laser_Pin = laser_pin
+        self.X_Pins = x_pins
+        self.Y_Pins = y_pins
+        self.Seq_Ind_X = 0
+        self.Seq_Ind_Y = 0
+        self.Cur_Step_X = 0
+        self.Cur_Step_Y = 0
+        self.Max_Step_X = 508
+        self.Min_Step_X = 0
+        self.Max_Step_Y = 508
+        self.Min_Step_Y = -508
+        self.Cur_Deg_X = 0.0
+        self.Cur_Deg_Y = 0.0
         GPIO.setmode(GPIO.BCM)
         for i in range(4):
-            GPIO.setup(self.XPins[i], GPIO.OUT)
-            GPIO.output(self.XPins[i], False)
-            GPIO.setup(self.YPins[i], GPIO.OUT)
-            GPIO.output(self.YPins[i], False)
+            GPIO.setup(self.X_Pins[i], GPIO.OUT)
+            GPIO.output(self.X_Pins[i], False)
+            GPIO.setup(self.Y_Pins[i], GPIO.OUT)
+            GPIO.output(self.Y_Pins[i], False)
+        GPIO.setup(self.Laser_Pin, GPIO.OUT)
+        GPIO.output(self.Laser_Pin, False)
         self.position = Point(0, 0)
         self.speed = speed
-        self.seq = [[1,0,0,1],
-                    [1,0,0,0],
-                    [1,1,0,0],
-                    [0,1,0,0],
-                    [0,1,1,0],
-                    [0,0,1,0],
-                    [0,0,1,1],
-                    [0,0,0,1]]
-
+        self.seq = [[True,False,False,True],
+                    [True,False,False,False],
+                    [True,True,False,False],
+                    [False,True,False,False],
+                    [False,True,True,False],
+                    [False,False,True,False],
+                    [False,False,True,True],
+                    [False,False,False,True]]
+    
+    def Laser_On(self):
+        GPIO.output(self.Laser_Pin, True)
+        self.Is_Laser_On = True
+    def Laser_Off(self):
+        GPIO.output(self.Laser_Pin, False)
+        self.Is_Laser_On = False
+    def _GoAbsSteps(self, new_x, new_Y):
+        change_X = new_x - self.Cur_Step_X
+        change_Y = new_y - self.Cur_Step_Y
     def MoveAbsolute(self, X, Y):
         dif_x = X - self.position.X
         dif_y = Y - self.position.Y
@@ -58,9 +81,9 @@ class Laser:
         for i in range(bigrange):
             for j in range(4):
                 if i < absX:
-                    GPIO.output(self.XPins[j], self.seq[countX][j] == 1)
+                    GPIO.output(self.X_Pins[j], self.seq[countX][j] == 1)
                 if i < absY:
-                    GPIO.output(self.YPins[j], self.seq[countY][j] == 1)
+                    GPIO.output(self.Y_Pins[j], self.seq[countY][j] == 1)
             time.sleep(self.speed)
             countX += xdir
             countY += ydir
@@ -73,5 +96,5 @@ class Laser:
             elif countY == -1:
                 countY = 7
         for i in range(4):
-            GPIO.output(self.XPins[i], False)
-            GPIO.output(self.YPins[i], False)
+            GPIO.output(self.X_Pins[i], False)
+            GPIO.output(self.Y_Pins[i], False)
