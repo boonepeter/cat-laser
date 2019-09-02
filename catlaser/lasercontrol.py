@@ -1,12 +1,15 @@
-import time
 import RPi.GPIO as GPIO
 
+LASER_PIN = 2
+
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(LASER_PIN, GPIO.OUT)
 
-GPIO.setup(2, GPIO.OUT)
 
-for i in range(50):
-    GPIO.output(2, True)
-    time.sleep(0.5)
-    GPIO.output(2, False)
-    time.sleep(0.25)
+def On():
+    GPIO.output(LASER_PIN, True)
+
+def Off():
+    GPIO.output(LASER_PIN, False)
+

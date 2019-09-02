@@ -1,7 +1,7 @@
 import init_laser as laser
 
-XPins = [2, 3, 4, 17]
-YPins = [10, 9, 11, 5]
+XPins = [3, 4, 17, 27]
+YPins = [22, 10, 21, 20]
 
 
 testlaser = laser.Laser(XPins, YPins, 0.005)
