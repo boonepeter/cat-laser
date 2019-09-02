@@ -1,3 +1,4 @@
+import math
 import sys
 import time
 import RPi.GPIO as GPIO
@@ -57,13 +58,39 @@ class Laser:
     def _GoAbsSteps(self, new_x, new_Y):
         change_X = new_x - self.Cur_Step_X
         change_Y = new_y - self.Cur_Step_Y
+    def ReturnAngles(self, X, Y):
+        hypot = math.sqrt((X*X) + (Y*Y))
+        if X == 0:
+            degX = 0
+        else:
+            degX = math.degrees(math.atan(X / Y))
+        if Y <= 0:
+            degY = 0
+        else:
+            degY = math.degrees(math.atan(hypot / self.height))
+        return degX, degY
+    def CalcSteps(self, X, Y):
+        newDegX, newDegY = ReturnAngles(X, Y)
+        difX = newDegX - self.Cur_Deg_X
+        difY = newDegY - self.Cur_Deg_Y
+        stepsX = (difX * 2038) / 360
+        stepsY = (difY * 2038) / 360
+        return stepsX, stepsY
+    def Move(self, X, Y):
+        degx, degy = self.ReturnAngles(X, Y)
+        change_x, change_y = self.CalcSteps(degx, degy)
+        self._MoveRelSteps(change_x, change_y)
+        self.Cur_Step_X = change_x
+        self.Cur_Step_Y = change_y
+        self.Cur_Deg_X = degx
+        self.Cur_Deg_Y = degy
     def MoveAbsolute(self, X, Y):
         dif_x = X - self.position.X
         dif_y = Y - self.position.Y
         self.position.X = X
         self.position.Y = Y
         self.MoveRelative(dif_x, dif_y)
-    def MoveRelative(self, X, Y):
+    def _MoveRelSteps(self, X, Y):
         absX = abs(X)
         absY = abs(Y)
         xdir = 1
@@ -76,14 +103,9 @@ class Laser:
             bigrange = absX
         else:
             bigrange = absY
-        countY = 0
-        countX = 0
+        countY = self.Seq_Ind_Y
+        countX = self.Seq_Ind_X
         for i in range(bigrange):
-            for j in range(4):
-                if i < absX:
-                    GPIO.output(self.X_Pins[j], self.seq[countX][j] == 1)
-                if i < absY:
-                    GPIO.output(self.Y_Pins[j], self.seq[countY][j] == 1)
             time.sleep(self.speed)
             countX += xdir
             countY += ydir
@@ -95,6 +117,13 @@ class Laser:
                 countY = 0
             elif countY == -1:
                 countY = 7
-        for i in range(4):
-            GPIO.output(self.X_Pins[i], False)
-            GPIO.output(self.Y_Pins[i], False)
+            self.Seq_Ind_X = countX
+            self.Seq_Ind_Y = countY
+            for j in range(4):
+                if i < absX:
+                    GPIO.output(self.X_Pins[j], self.seq[countX][j])
+                if i < absY:
+                    GPIO.output(self.Y_Pins[j], self.seq[countY][j])
+        #for i in range(4):
+        #    GPIO.output(self.X_Pins[i], False)
+        #    GPIO.output(self.Y_Pins[i], False)
