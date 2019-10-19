@@ -20,14 +20,19 @@ down = False
 left = False
 right = False
 while True:
+    x = 0
+    y = 0
     if up:
-        testlaser._MoveRelSteps(0, 5)
+        y = 10
     elif down:
-        testlaser._MoveRelSteps(0, -5)
+        y = -10
     if left:
-        testlaser._MoveRelSteps(-5, 0)
+        x = -10
     elif right:
-        testlaser._MoveRelSteps(5, 0)
+        x = 10
+    
+    if (x != 0) or (y != 0):
+        testlaser._MoveRelSteps(x, y)
 
     try:
         events = gamepad.read()
