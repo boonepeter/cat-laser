@@ -1,4 +1,5 @@
 import init_laser as laser
+import asyncio
 from evdev import InputDevice, categorize, ecodes
 
 XPins = [12, 25, 24, 23]
