@@ -20,7 +20,6 @@ down = False
 left = False
 right = False
 to_break = False
-speed = 1
 while True:
     if to_break:
         testlaser.TurnOff()
@@ -35,8 +34,6 @@ while True:
         x = -10
     elif right:
         x = 10
-    x *= speed
-    y *= speed
     print(f"{x} {y}")
     if (x != 0) or (y != 0):
         testlaser._MoveRelSteps(x, y)
@@ -70,9 +67,9 @@ while True:
                     print("R Trig")
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
-                        speed = 5
+                        testlaser.speed = 0.005
                     elif event.value == 0:
-                        speed = 1
+                        testlaser.speed = 0.01
                 else:
                     print("unknown button")
             elif event.type == ecodes.EV_ABS:
