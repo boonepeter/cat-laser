@@ -66,9 +66,9 @@ while True:
                     print("R Trig")
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
-                        testlaser.speed = 0.005
+                        testlaser.speed = 0.0001
                     elif event.value == 0:
-                        testlaser.speed = 0.01
+                        testlaser.speed = 0.001
                 else:
                     print("unknown button")
             elif event.type == ecodes.EV_ABS:
