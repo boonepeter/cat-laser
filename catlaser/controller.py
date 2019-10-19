@@ -28,9 +28,10 @@ while True:
         testlaser._MoveRelSteps(-5, 0)
     elif right:
         testlaser._MoveRelSteps(5, 0)
-    events = gamepad.read()
-    if len(events) != 0:
-        event = events[0]
+
+    try:
+        events = gamepad.read()
+    for event in events:
         if event.type == ecodes.EV_KEY:
             if event.code == 296: # SELECT
                 if event.value == 1:
