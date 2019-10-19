@@ -11,9 +11,6 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.01)
 testlaser.Laser_On()
 testlaser.Laser_Off()
 
-
-
-
 gamepad = InputDevice('/dev/input/event0')
 print(gamepad)
 
@@ -50,10 +47,10 @@ for event in gamepad.read_loop():
                 testlaser.Move(50, 0)
         elif event.code == 1: #Y direction
             if event.value == 0: #up direction
-                testlaser._MoveUp()
+                up_task = asyncio.create_task(testlaser.MoveUp())
             elif event.value == 127:
-                testlaser._Stop_Y
+                up_task.cancel()
             elif event.value == 255: #down direction
-                testlaser._MoveDown()
+                print("down")
         else:
             print("Unknown direction")
