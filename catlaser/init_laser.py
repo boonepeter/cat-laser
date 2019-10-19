@@ -29,6 +29,8 @@ class Laser:
         self.Min_Step_X = 0
         self.Max_Step_Y = 508
         self.Min_Step_Y = -508
+        self.Stop_X = False
+        self.Stop_Y = False
         GPIO.setmode(GPIO.BCM)
         for i in range(4):
             GPIO.setup(self.X_Pins[i], GPIO.OUT)
@@ -47,6 +49,17 @@ class Laser:
                     [False,False,True,False],
                     [False,False,True,True],
                     [False,False,False,True]]
+    
+    def _MoveUp(self):
+        self.Stop_Y = False
+        while(not self.Stop_Y):
+            self._MoveRelSteps(0, -5)
+    def _Stop_Y(self):
+        self.Stop_Y = True
+    def _MoveDown(self):
+        self.Stop_Y = False
+        while(not self.Stop_Y):
+            self._MoveRelSteps(0, 5)
     
     def Laser_On(self):
         GPIO.output(self.Laser_Pin, True)
