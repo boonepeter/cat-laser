@@ -1,5 +1,4 @@
 import init_laser as laser
-import asyncio
 from evdev import InputDevice, categorize, ecodes
 
 XPins = [12, 25, 24, 23]
@@ -15,7 +14,21 @@ testlaser.Laser_Off()
 gamepad = InputDevice('/dev/input/event0')
 print(gamepad)
 
+
+up = False
+down = False
+left = False
+right = False
+
 for event in gamepad.read_loop():
+    if up:
+        testlaser._MoveRelSteps(0, 5)
+    elif down:
+        testlaser._MoveRelSteps(0, -5)
+    if left:
+        testlaser._MoveRelSteps(-5, 0)
+    elif right:
+        testlaser._MoveRelSteps(5, 0)
     if event.type == ecodes.EV_KEY:
         
         if event.code == 296: # SELECT
@@ -43,15 +56,19 @@ for event in gamepad.read_loop():
     elif event.type == ecodes.EV_ABS:
         if event.code == 0: # X direction
             if event.value == 0: #Left down
-                testlaser.Move(-50, 0)
+                left = True
+            if event.value == 127:
+                left = False
+                right = False
             elif event.value == 255: #Right down
-                testlaser.Move(50, 0)
+                right = True
         elif event.code == 1: #Y direction
             if event.value == 0: #up direction
-                up_task = asyncio.create_task(testlaser.MoveUp())
+                up = True
             elif event.value == 127:
-                up_task.cancel()
+                up = False
+                down = False
             elif event.value == 255: #down direction
-                print("down")
+                down = True
         else:
             print("Unknown direction")

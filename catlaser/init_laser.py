@@ -1,7 +1,6 @@
 import math
 import sys
 import time
-import asyncio
 import RPi.GPIO as GPIO
 
 GPIO.setwarnings(False)
@@ -59,13 +58,6 @@ class Laser:
     def _GoAbsSteps(self, new_x, new_Y):
         change_X = new_x - self.Cur_Step_X
         change_Y = new_y - self.Cur_Step_Y
-    async def MoveUp(self):
-        try:
-            while true:
-                self._MoveRelSteps(0, -5)
-        except asyncio.CancelledError:
-            self._MoveRelSteps(0, 0)
-    
     def Move(self, X, Y):
         self._MoveRelSteps(X, Y)
         self.Cur_Step_X = X
