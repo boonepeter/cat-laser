@@ -1,4 +1,5 @@
 import init_laser as laser
+import time
 from evdev import InputDevice, categorize, ecodes
 
 XPins = [12, 25, 24, 23]
@@ -9,6 +10,7 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.01)
 
 
 testlaser.Laser_On()
+time.sleep(0.5)
 testlaser.Laser_Off()
 
 gamepad = InputDevice('/dev/input/event0')
@@ -66,9 +68,9 @@ while True:
                     print("R Trig")
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
-                        testlaser.speed = 0.0001
+                        testlaser.speed = 0.00005
                     elif event.value == 0:
-                        testlaser.speed = 0.001
+                        testlaser.speed = 0.0005
                 else:
                     print("unknown button")
             elif event.type == ecodes.EV_ABS:
