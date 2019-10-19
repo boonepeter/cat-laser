@@ -97,7 +97,6 @@ class Laser:
                 countY = 7
             self.Seq_Ind_X = countX
             self.Seq_Ind_Y = countY
-            print(countY)
             for j in range(4):
                 if i < absX:
                     GPIO.output(self.X_Pins[j], self.seq[countX][j])
