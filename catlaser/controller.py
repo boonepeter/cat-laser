@@ -5,7 +5,7 @@ XPins = [12, 25, 24, 23]
 YPins = [4, 17, 27, 22]
 
 Laser_Pin = 16
-testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.005)
+testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.01)
 
 
 testlaser.Laser_On()
@@ -45,13 +45,13 @@ for event in gamepad.read_loop():
     elif event.type == ecodes.EV_ABS:
         if event.code == 0: # X direction
             if event.value == 0: #Left down
-                testlaser.Move(-10, 0)
+                testlaser.Move(-50, 0)
             elif event.value == 255: #Right down
-                testlaser.Move(10, 0)
+                testlaser.Move(50, 0)
         elif event.code == 1: #Y direction
             if event.value == 0: #up direction
-                testlaser.Move(0, -10)
+                testlaser.Move(0, -50)
             elif event.value == 1: #down direction
-                testlaser.Move(0, 10)
+                testlaser.Move(0, 50)
         else:
             print("Unknown direction")
