@@ -50,8 +50,8 @@ for event in gamepad.read_loop():
                 testlaser.Move(10, 0)
         elif event.code == 1: #Y direction
             if event.value == 0: #up direction
-                testlaser.Move(0, 10)
+                testlaser.Move(0, -10)
             elif event.value == 1: #down direction
-                testlaser.Move(-10, 0)
+                testlaser.Move(0, 10)
         else:
             print("Unknown direction")
