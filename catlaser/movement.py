@@ -11,10 +11,11 @@ testlaser.Laser_Off()
 
 
 
-
+"""
 with open("test.csv", "r") as smallcsv:
     for line in smallcsv:
         xy = line.strip().split(',')
         testlaser.MoveAbsolute(int(xy[0]), int(xy[1]))
 testlaser.Laser_Off()
 testlaser.MoveAbsolute(0,0)
+"""
