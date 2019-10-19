@@ -102,3 +102,8 @@ class Laser:
                     GPIO.output(self.X_Pins[j], self.seq[countX][j])
                 if i < absY:
                     GPIO.output(self.Y_Pins[j], self.seq[countY][j])
+    def TurnOff(self):
+        for i in range(4):
+            GPIO.output(self.X_Pins[i], False)
+            GPIO.output(self.Y_Pins[i], False)
+        self.Laser_Off()

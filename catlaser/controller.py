@@ -19,7 +19,12 @@ up = False
 down = False
 left = False
 right = False
+to_break = False
+speed = 1
 while True:
+    if to_break:
+        testlaser.TurnOff()
+        break
     x = 0
     y = 0
     if up:
@@ -30,7 +35,8 @@ while True:
         x = -10
     elif right:
         x = 10
-    
+    x *= speed
+    y *= speed
     if (x != 0) or (y != 0):
         testlaser._MoveRelSteps(x, y)
 
@@ -45,19 +51,27 @@ while True:
                         else:
                             testlaser.Laser_On()
                 elif event.code == 297: #START
-                    print("start")
+                    if event.value == 1:
+                        to_break = True
                 elif event.code == 291: # Y button
                     print("Y")
                 elif event.code == 288: # X button
                     print("X")
                 elif event.code == 290: # B button
-                    print("B")
+                    if event.value == 1:
+                        if testlaser.Is_Laser_On:
+                            testlaser.Laser_Off()
+                        else:
+                            testlaser.Laser_On()                    
                 elif event.code == 289: # A button
                     print("A")
                 elif event.code == 293: # Right Trigger
                     print("R Trig")
                 elif event.code == 292: # Left trigger
-                    print("L Trig")
+                    if event.value == 1:
+                        speed = 5
+                    elif event.value == 0:
+                        speed = 1
                 else:
                     print("unknown button")
             elif event.type == ecodes.EV_ABS:
