@@ -29,8 +29,6 @@ class Laser:
         self.Min_Step_X = 0
         self.Max_Step_Y = 508
         self.Min_Step_Y = -508
-        self.Cur_Deg_X = 0.0
-        self.Cur_Deg_Y = 0.0
         GPIO.setmode(GPIO.BCM)
         for i in range(4):
             GPIO.setup(self.X_Pins[i], GPIO.OUT)
@@ -59,32 +57,10 @@ class Laser:
     def _GoAbsSteps(self, new_x, new_Y):
         change_X = new_x - self.Cur_Step_X
         change_Y = new_y - self.Cur_Step_Y
-    def ReturnAngles(self, X, Y):
-        hypot = math.sqrt((X*X) + (Y*Y))
-        if X == 0:
-            degX = 0
-        else:
-            degX = math.degrees(math.atan(X / Y))
-        if Y <= 0:
-            degY = 0
-        else:
-            degY = math.degrees(math.atan(hypot / self.height))
-        return degX, degY
-    def CalcSteps(self, X, Y):
-        newDegX, newDegY = self.ReturnAngles(X, Y)
-        difX = newDegX - self.Cur_Deg_X
-        difY = newDegY - self.Cur_Deg_Y
-        stepsX = (difX * 2038) / 360
-        stepsY = (difY * 2038) / 360
-        return int(stepsX), int(stepsY)
     def Move(self, X, Y):
-        degx, degy = self.ReturnAngles(X, Y)
-        change_x, change_y = self.CalcSteps(degx, degy)
-        self._MoveRelSteps(change_x, change_y)
-        self.Cur_Step_X = change_x
-        self.Cur_Step_Y = change_y
-        self.Cur_Deg_X = degx
-        self.Cur_Deg_Y = degy
+        self._MoveRelSteps(X, Y)
+        self.Cur_Step_X = X
+        self.Cur_Step_Y = Y
     def MoveAbsolute(self, X, Y):
         dif_x = X - self.position.X
         dif_y = Y - self.position.Y
@@ -125,6 +101,3 @@ class Laser:
                     GPIO.output(self.X_Pins[j], self.seq[countX][j])
                 if i < absY:
                     GPIO.output(self.Y_Pins[j], self.seq[countY][j])
-        #for i in range(4):
-        #    GPIO.output(self.X_Pins[i], False)
-        #    GPIO.output(self.Y_Pins[i], False)
