@@ -34,7 +34,6 @@ while True:
         x = -10
     elif right:
         x = 10
-    print(f"{x} {y}")
     if (x != 0) or (y != 0):
         testlaser._MoveRelSteps(x, y)
 
