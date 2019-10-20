@@ -6,12 +6,13 @@ XPins = [12, 25, 24, 23]
 YPins = [4, 17, 27, 22]
 
 Laser_Pin = 16
-testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.01)
+testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 
-testlaser.Laser_On()
-time.sleep(0.5)
-testlaser.Laser_Off()
+#.. / .-.. --- ...- . / -.-- --- ..-
+testlaser.PrintMorse("I love you!")
+
+
 
 gamepad = InputDevice('/dev/input/event0')
 print(gamepad)
@@ -68,9 +69,9 @@ while True:
                     print("R Trig")
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
-                        testlaser.speed = 0.00005
-                    elif event.value == 0:
                         testlaser.speed = 0.0005
+                    elif event.value == 0:
+                        testlaser.speed = 0.001
                 else:
                     print("unknown button")
             elif event.type == ecodes.EV_ABS:

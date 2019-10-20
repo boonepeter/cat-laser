@@ -5,6 +5,59 @@ import RPi.GPIO as GPIO
 
 GPIO.setwarnings(False)
 
+morse_dict = {
+    "a" : [1, 3],
+    "b" : [3, 1, 1, 1],
+    "c" : [3, 1, 3, 1],
+    "d" : [3, 1, 1],
+    "e" : [1],
+    "f" : [1, 1, 3, 1],
+    "g" : [3, 3, 1],
+    "h" : [1, 1, 1, 1],
+    "i" : [1, 1],
+    "j" : [1, 3, 3, 3],
+    "k" : [3, 1, 3],
+    "l" : [1, 3, 1, 1],
+    "m" : [3, 3],
+    "n" : [3, 1],
+    "o" : [3, 3, 3],
+    "p" : [1, 3, 3, 1],
+    "q" : [3, 3, 1, 3], 
+    "r" : [1, 3, 1], 
+    "s" : [1, 1, 1],
+    "t" : [3],
+    "u" : [1, 1, 3],
+    "v" : [1, 1, 1, 3],
+    "w" : [1, 3, 3],
+    "x" : [3, 1, 1, 3],
+    "y" : [3, 1, 3, 3],
+    "z" : [3, 3, 1, 1],
+    "0" : [3, 3, 3, 3, 3],
+    "1" : [1, 3, 3, 3, 3],
+    "2" : [1, 1, 3, 3, 3],
+    "3" : [1, 1, 1, 3, 3],
+    "4" : [1, 1, 1, 1, 3],
+    "5" : [1, 1, 1, 1, 1],
+    "6" : [3, 1, 1, 1, 1],
+    "7" : [3, 3, 1, 1, 1],
+    "8" : [3, 3, 3, 1, 1],
+    "9" : [3, 3, 3, 3, 1],
+    "." : [1, 3, 1, 3, 1, 3],
+    "," : [3, 3, 1, 1, 3, 3],
+    "?" : [1, 1, 3, 3, 1, 1], 
+    "'" : [1, 3, 3, 3, 3, 1],
+    "!" : [3, 1, 3, 1, 3, 3],
+    "/" : [3, 1, 1, 3, 1],
+    ";" : [3, 1, 3, 1, 3, 1],
+    ":" : [3, 3, 3, 1, 1, 1],
+    "=" : [3, 1, 1, 1, 3],
+    "+" : [1, 3, 1, 3, 1],
+    "-" : [3, 1, 1, 1, 1, 3],
+    "_" : [1, 1, 3, 3, 1, 3],
+}
+
+
+
 class Point:
     def __init__(self, X, Y):
         self.X = X
@@ -107,3 +160,17 @@ class Laser:
             GPIO.output(self.X_Pins[i], False)
             GPIO.output(self.Y_Pins[i], False)
         self.Laser_Off()
+    def PrintMorse(self, text, timespan = 0.1):
+        text = text.lower()
+        words = text.split()
+        for word in words:
+            for l in word:
+                if l in morse_dict:
+                    for i in morse_dict[l]:
+                        self.Laser_On()
+                        time.sleep(timespan * i)
+                        self.Laser_Off()
+                        time.sleep(timespan)
+                time.sleep(timespan * 2)
+            time.sleep(timespan * 4)
+            
