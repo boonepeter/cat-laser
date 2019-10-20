@@ -17,6 +17,8 @@ print("- D-pad: Move")
 print("- B: Laser on/off")
 print("- L/R bumper: fast mode")
 print("- Start: sleep")
+print("- A: keep track of movement")
+print("- X: play back movement")
 
 gamepad = InputDevice('/dev/input/event0')
 
