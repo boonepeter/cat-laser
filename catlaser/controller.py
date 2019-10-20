@@ -10,12 +10,7 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 
 #.. / .-.. --- ...- . / -.-- --- ..-
-time.sleep(2)
-testlaser.PrintMorse("I love you!", 0.005)
-time.sleep(2)
-testlaser.PrintMorse("I love you!", 0.01)
-time.sleep(2)
-testlaser.PrintMorse("I love you!", 0.05)
+testlaser.PrintMorse("I love you!", 0.02)
 
 
 
