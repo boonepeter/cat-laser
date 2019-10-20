@@ -15,7 +15,7 @@ testlaser.PrintMorse("I love you!", 0.02)
 print("Welcome to the cat laser toy!")
 print("- D-pad: Move")
 print("- B: Laser on/off")
-print("- Left trigger: fast mode")
+print("- L/R bumper: fast mode")
 print("- Start: sleep")
 
 gamepad = InputDevice('/dev/input/event0')
@@ -27,6 +27,8 @@ down = False
 left = False
 right = False
 to_break = False
+l_trig = False
+r_trig = False
 while True:
     if to_break:
         testlaser.TurnOff()
@@ -56,6 +58,10 @@ while True:
         x = 10
     if (x != 0) or (y != 0):
         testlaser._MoveRelSteps(x, y)
+    if l_trig or r_trig:
+        testlaser.speed = 0.0005
+    else:
+        testlaser.speed = 0.001
     try:
         events = gamepad.read()
         for event in events:
@@ -82,13 +88,15 @@ while True:
                     #print("A")
                     pass
                 elif event.code == 293: # Right Trigger
-                    #print("R Trig")
-                    pass
+                    if event.value == 1:
+                        r_trig = True
+                    elif event.value == 0:
+                        r_trig = False
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
-                        testlaser.speed = 0.0005
+                        l_trig = True
                     elif event.value == 0:
-                        testlaser.speed = 0.001
+                        l_trig = False
             elif event.type == ecodes.EV_ABS:
                 if event.code == 0: # X direction
                     if event.value == 0: #Left down
