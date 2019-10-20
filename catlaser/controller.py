@@ -32,17 +32,17 @@ while True:
         testlaser.TurnOff()
         while to_break:
             time.sleep(0.5)
-                try:
-                    events = gamepad.read()
-                    for event in events:
-                        if event.type == ecodes.EV_KEY:
-                            if event.code == 297: #START
-                                if event.value == 1:
-                                    to_break = False
-                                    testlaser.PrintMorse("I love you!", 0.005)
-                except BlockingIOError:
-                    #do nothing
-                    pass
+            try:
+                events = gamepad.read()
+                for event in events:
+                    if event.type == ecodes.EV_KEY:
+                        if event.code == 297: #START
+                            if event.value == 1:
+                                to_break = False
+                                testlaser.PrintMorse("I love you!", 0.005)
+            except BlockingIOError:
+                #do nothing
+                pass
     x = 0
     y = 0
     if up:
