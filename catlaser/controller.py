@@ -22,6 +22,7 @@ gamepad = InputDevice('/dev/input/event0')
 
 
 
+move_list = []
 up = False
 down = False
 left = False
@@ -29,6 +30,8 @@ right = False
 to_break = False
 l_trig = False
 r_trig = False
+keep_track = False
+play_moves = False
 while True:
     if to_break:
         testlaser.TurnOff()
@@ -62,6 +65,17 @@ while True:
         testlaser.speed = 0.0005
     else:
         testlaser.speed = 0.001
+    if keep_track and (x != 0 or y != 0):
+        move_list.append((x, y, testlaser.Is_Laser_On))
+    if play_moves:
+        for ex, why, on in move_list:
+            if on and not testlaser.Is_Laser_On:
+                testlaser.Laser_On()
+            elif not on and testlaser.Is_Laser_On:
+                testlaser.Laser_Off()
+            testlaser._MoveRelSteps(ex, why)
+        play_moves = False
+
     try:
         events = gamepad.read()
         for event in events:
@@ -76,8 +90,8 @@ while True:
                     #print("Y")
                     pass
                 elif event.code == 288: # X button
-                    #print("X")
-                    pass
+                    if event.value == 1:
+                        play_moves = True
                 elif event.code == 290: # B button
                     if event.value == 1:
                         if testlaser.Is_Laser_On:
@@ -85,8 +99,10 @@ while True:
                         else:
                             testlaser.Laser_On()                    
                 elif event.code == 289: # A button
-                    #print("A")
-                    pass
+                    if event.value == 1:
+                        keep_track = True
+                    elif event.value == 0:
+                        keep_track = False
                 elif event.code == 293: # Right Trigger
                     if event.value == 1:
                         r_trig = True
