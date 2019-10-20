@@ -10,12 +10,12 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 
 #.. / .-.. --- ...- . / -.-- --- ..-
-testlaser.PrintMorse("I love you!")
+testlaser.PrintMorse("I love you!", 0.001)
 
 
 
 gamepad = InputDevice('/dev/input/event0')
-print(gamepad)
+
 
 
 up = False
