@@ -39,6 +39,7 @@ while True:
                             if event.code == 297: #START
                                 if event.value == 1:
                                     to_break = False
+                                    testlaser.PrintMorse("I love you!", 0.005)
                 except BlockingIOError:
                     #do nothing
                     pass
