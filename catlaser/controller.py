@@ -61,13 +61,16 @@ while True:
             if event.type == ecodes.EV_KEY:
                 if event.code == 296: # SELECT
                     #print("Select")
+                    pass
                 elif event.code == 297: #START
                     if event.value == 1:
                         to_break = True
                 elif event.code == 291: # Y button
                     #print("Y")
+                    pass
                 elif event.code == 288: # X button
                     #print("X")
+                    pass
                 elif event.code == 290: # B button
                     if event.value == 1:
                         if testlaser.Is_Laser_On:
@@ -76,8 +79,10 @@ while True:
                             testlaser.Laser_On()                    
                 elif event.code == 289: # A button
                     #print("A")
+                    pass
                 elif event.code == 293: # Right Trigger
                     #print("R Trig")
+                    pass
                 elif event.code == 292: # Left trigger
                     if event.value == 1:
                         testlaser.speed = 0.0005
