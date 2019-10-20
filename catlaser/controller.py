@@ -10,7 +10,7 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 
 #.. / .-.. --- ...- . / -.-- --- ..-
-testlaser.PrintMorse("I love you!", 0.02)
+testlaser.PrintMorse("I love you!", 0.01)
 
 print("Welcome to the cat laser toy!")
 print("- D-pad: Move")
