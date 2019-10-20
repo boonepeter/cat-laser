@@ -10,7 +10,7 @@ testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 
 #.. / .-.. --- ...- . / -.-- --- ..-
-testlaser.PrintMorse("I love you!", 0.02)
+testlaser.PrintMorse("I love you!", 0.05)
 
 print("Welcome to the cat laser toy!")
 print("- D-pad: Move")
@@ -39,7 +39,8 @@ while True:
                         if event.code == 297: #START
                             if event.value == 1:
                                 to_break = False
-                                testlaser.PrintMorse("I love you!", 0.005)
+                                testlaser.PrintMorse("I love you!", 0.05)
+                                testlaser.Laser_On()
             except BlockingIOError:
                 #do nothing
                 pass
