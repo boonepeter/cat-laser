@@ -98,7 +98,7 @@ class ServoLaser:
         if y != self.y_angle:
             self.y_servo.ChangeDutyCycle(y)
             self.y_angle = y
-        time.sleep(0.1)
+        time.sleep(0.5)
         self.y_servo.ChangeDutyCycle(0)
         self.x_servo.ChangeDutyCycle(0)
     def MoveRelative(self, x, y):
@@ -110,7 +110,7 @@ class ServoLaser:
             self.y_angle = new_y
         self.y_servo.ChangeDutyCycle(self.y_angle)
         self.x_servo.ChangeDutyCycle(self.x_angle)
-        time.sleep(0.1)
+        time.sleep(0.05)
         self.y_servo.ChangeDutyCycle(0)
         self.x_servo.ChangeDutyCycle(0)
     def TurnOff(self):
