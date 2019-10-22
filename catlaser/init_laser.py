@@ -81,11 +81,17 @@ class ServoLaser:
         self.x_servo = GPIO.PWM(x_pin, 50)
         self.y_servo.start(0)
         self.x_servo.start(0)
-
-        self.y_angle = 0
-        self.x_angle = 0
+        self.x_servo.ChangeDutyCycle(1)
+        self.y_servo.ChangeDutyCycle(1)
+        time.sleep(0.1)
+        self.x_servo.ChangeDutyCycle(0)
+        self.y_servo.ChangeDutyCycle(0)
+        self.y_angle = 1
+        self.x_angle = 1
 
     def Move(self, x, y):
+        if (x <= 0 or y <= 0):
+            return
         if x != self.x_angle:
             self.x_servo.ChangeDutyCycle(x)
             self.x_angle = x
@@ -96,8 +102,12 @@ class ServoLaser:
         self.y_servo.ChangeDutyCycle(0)
         self.x_servo.ChangeDutyCycle(0)
     def MoveRelative(self, x, y):
-        self.x_angle += x
-        self.y_angle += y
+        new_x = self.x_angle + x
+        new_y = self.y_angle + y
+        if (new_x > 0):
+            self.x_angle = new_x
+        if new_y > 0:
+            self.y_angle = new_y
         self.y_servo.ChangeDutyCycle(self.y_angle)
         self.x_servo.ChangeDutyCycle(self.x_angle)
         sleep(0.01)
