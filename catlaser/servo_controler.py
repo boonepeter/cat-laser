@@ -62,7 +62,7 @@ while True:
     elif right:
         x = 0.1
     if (x != 0) or (y != 0):
-        servo_laser.MoveRelSteps(x, y)
+        servo_laser.MoveRelative(x, y)
     if keep_track and (x != 0 or y != 0):
         move_list.append((x, y, servo_laser.Is_Laser_On))
     if play_moves:
