@@ -2,19 +2,15 @@ import init_laser as laser
 import time
 from evdev import InputDevice, categorize, ecodes
 
-XPins = [12, 25, 24, 23]
-YPins = [4, 17, 27, 22]
-
 Laser_Pin = 16
-testlaser = laser.Laser(XPins, YPins, Laser_Pin, 0.001)
 
 #Servo Motors
-#y_servo = 17
-#x_servo = 27
-#servo_laser = laser.ServoLaser(x_servo, y_servo, Laser_Pin)
+y_servo = 17
+x_servo = 27
+servo_laser = laser.ServoLaser(x_servo, y_servo, Laser_Pin)
 
 #.. / .-.. --- ...- . / -.-- --- ..-
-testlaser.PrintMorse("I love you!", 0.01)
+servo_laser.PrintMorse("I love you!", 0.01)
 
 print("Welcome to the cat laser toy!")
 print("- D-pad: Move")
@@ -40,7 +36,7 @@ keep_track = False
 play_moves = False
 while True:
     if to_break:
-        testlaser.TurnOff()
+        servo_laser.TurnOff()
         while to_break:
             time.sleep(0.5)
             try:
@@ -50,36 +46,32 @@ while True:
                         if event.code == 297: #START
                             if event.value == 1:
                                 to_break = False
-                                testlaser.PrintMorse("I love you!", 0.02)
-                                testlaser.Laser_On()
+                                servo_laser.PrintMorse("I love you!", 0.02)
+                                servo_laser.Laser_On()
             except BlockingIOError:
                 #do nothing
                 pass
     x = 0
     y = 0
     if up:
-        y = 10
+        y = 0.1
     elif down:
-        y = -10
+        y = -0.1
     if left:
-        x = -10
+        x = -0.1
     elif right:
-        x = 10
+        x = 0.1
     if (x != 0) or (y != 0):
-        testlaser._MoveRelSteps(x, y)
-    if l_trig or r_trig:
-        testlaser.speed = 0.0005
-    else:
-        testlaser.speed = 0.001
+        servo_laser.MoveRelSteps(x, y)
     if keep_track and (x != 0 or y != 0):
-        move_list.append((x, y, testlaser.Is_Laser_On))
+        move_list.append((x, y, servo_laser.Is_Laser_On))
     if play_moves:
         for ex, why, on in move_list:
-            if on and not testlaser.Is_Laser_On:
-                testlaser.Laser_On()
-            elif not on and testlaser.Is_Laser_On:
-                testlaser.Laser_Off()
-            testlaser._MoveRelSteps(ex, why)
+            if on and not servo_laser.Is_Laser_On:
+                servo_laser.Laser_On()
+            elif not on and servo_laser.Is_Laser_On:
+                servo_laser.Laser_Off()
+            servo_laser.MoveRelative(ex, why)
         play_moves = False
 
     try:
@@ -100,10 +92,10 @@ while True:
                         play_moves = True
                 elif event.code == 290: # B button
                     if event.value == 1:
-                        if testlaser.Is_Laser_On:
-                            testlaser.Laser_Off()
+                        if servo_laser.Is_Laser_On:
+                            servo_laser.Laser_Off()
                         else:
-                            testlaser.Laser_On()                    
+                            servo_laser.Laser_On()                    
                 elif event.code == 289: # A button
                     if event.value == 1:
                         keep_track = True

@@ -65,6 +65,69 @@ class Point:
     def __repr__(self):
         return f"{self.X},{self.Y}"
 
+class ServoLaser:
+    def __init__(self, x_pin, y_pin, laser_pin):
+        self.Is_Laser_On = False
+        self.Laser_Pin = laser_pin
+        self.X_Pin = x_pin
+        self.Y_Pin = y_pin
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.X_Pin, GPIO.OUT)
+        GPIO.setup(self.Y_Pin, GPIO.OUT)
+        
+        self.y_servo = GPIO.PWM(y_pin, 50)
+        self.x_servo = GPIO.PWM(x_pin, 50)
+        self.y_servo.start(0)
+        self.x_servo.start(0)
+
+        self.y_angle = 0
+        self.x_angle = 0
+
+    def Move(self, x, y):
+        if x != self.x_angle:
+            self.x_servo.ChangeDutyCycle(x)
+            self.x_angle = x
+        if y != self.y_angle:
+            self.y_servo.ChangeDutyCycle(y)
+            self.y_angle = y
+        sleep(0.01)
+        self.y_servo.ChangeDutyCycle(0)
+        self.x_servo.ChangeDutyCycle(0)
+    def MoveRelative(self, x, y):
+        self.x_angle += x
+        self.y_angle += y
+        self.y_servo.ChangeDutyCycle(self.y_angle)
+        self.x_servo.ChangeDutyCycle(self.x_angle)
+        sleep(0.01)
+        self.y_servo.ChangeDutyCycle(0)
+        self.x_servo.ChangeDutyCycle(0)
+    def TurnOff(self):
+        GPIO.output(self.X_Pins, False)
+        GPIO.output(self.Y_Pin, False)
+        self.Laser_Off()
+    def Laser_On(self):
+        GPIO.output(self.Laser_Pin, True)
+        self.Is_Laser_On = True
+    def Laser_Off(self):
+        GPIO.output(self.Laser_Pin, False)
+        self.Is_Laser_On = False
+
+    def PrintMorse(self, text, timespan = 0.1):
+        text = text.lower()
+        words = text.split()
+        for word in words:
+            for l in word:
+                if l in morse_dict:
+                    for i in morse_dict[l]:
+                        self.Laser_On()
+                        time.sleep(timespan * i)
+                        self.Laser_Off()
+                        time.sleep(timespan)
+                time.sleep(timespan * 2)
+            time.sleep(timespan * 4)
+
+
 class Laser:
     def __init__(self, x_pins, y_pins, laser_pin, height=100, speed=0.001):
         if (len(x_pins) != 4) or (len(y_pins) != 4):
@@ -102,12 +165,6 @@ class Laser:
                     [False,False,True,True],
                     [False,False,False,True]]
     
-    def Laser_On(self):
-        GPIO.output(self.Laser_Pin, True)
-        self.Is_Laser_On = True
-    def Laser_Off(self):
-        GPIO.output(self.Laser_Pin, False)
-        self.Is_Laser_On = False
     def _GoAbsSteps(self, new_x, new_Y):
         change_X = new_x - self.Cur_Step_X
         change_Y = new_y - self.Cur_Step_Y
