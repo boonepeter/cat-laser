@@ -75,6 +75,7 @@ class ServoLaser:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.X_Pin, GPIO.OUT)
         GPIO.setup(self.Y_Pin, GPIO.OUT)
+        GPIO.sertup(self.Laser_Pin, GPIO.OUT)
         
         self.y_servo = GPIO.PWM(y_pin, 50)
         self.x_servo = GPIO.PWM(x_pin, 50)
