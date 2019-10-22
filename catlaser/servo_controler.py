@@ -54,13 +54,13 @@ while True:
     x = 0
     y = 0
     if up:
-        y = 0.1
-    elif down:
         y = -0.1
+    elif down:
+        y = 0.1
     if left:
-        x = -0.1
-    elif right:
         x = 0.1
+    elif right:
+        x = -0.1
     if (x != 0) or (y != 0):
         servo_laser.MoveRelative(x, y)
     if keep_track and (x != 0 or y != 0):
