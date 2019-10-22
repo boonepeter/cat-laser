@@ -104,7 +104,7 @@ class ServoLaser:
         self.y_servo.ChangeDutyCycle(0)
         self.x_servo.ChangeDutyCycle(0)
     def TurnOff(self):
-        GPIO.output(self.X_Pins, False)
+        GPIO.output(self.X_Pin, False)
         GPIO.output(self.Y_Pin, False)
         self.Laser_Off()
     def Laser_On(self):
