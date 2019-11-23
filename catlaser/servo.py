@@ -28,10 +28,10 @@ class Motors():
 motor = Motors(x_servo, y_servo)
 time.sleep(1)
 for i in range(10):
-    motor.Move_X(i * 10)
+    motor.Move_X(i * 0.1)
     time.sleep(1)
 for i in range(10):
-    motor.Move_Y(i * 10)
+    motor.Move_Y(i * 0.1)
     time.sleep(1)
 
 motor.Close()
