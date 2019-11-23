@@ -189,6 +189,12 @@ class Laser:
         self.position.X = X
         self.position.Y = Y
         self.MoveRelative(dif_x, dif_y)
+    def Laser_On(self):
+        GPIO.output(self.Laser_Pin, True)
+        self.Is_Laser_On = True
+    def Laser_Off(self):
+        GPIO.output(self.Laser_Pin, False)
+        self.Is_Laser_On = False
     def _MoveRelSteps(self, X, Y):
         absX = abs(X)
         absY = abs(Y)
