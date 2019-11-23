@@ -21,6 +21,4 @@ class Motors():
 motor = Motors(x_servo, y_servo)
 for i in range(10):
     motor.Move(i * 10)
-    time.sleep(.1)
-    motor.Move(0)
     time.sleep(1)
