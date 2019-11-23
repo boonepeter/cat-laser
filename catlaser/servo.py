@@ -16,9 +16,26 @@ class Motors():
     def Move(self, percent):
         self.x.ChangeDutyCycle(percent)
         self.y.ChangeDutyCycle(percent)
-
+    def Move_X(self, percent):
+        self.x.ChangeDutyCycle(percent)
+    def Move_Y(self, percent):
+        self.y.ChangeDutyCycle(percent)
+    def Close(self):
+        x.stop()
+        y.stop()
+        GPIO.cleanup()     
 
 motor = Motors(x_servo, y_servo)
 for i in range(10):
     motor.Move(i * 10)
     time.sleep(1)
+motor.Move(0)
+time.sleep(1)
+for i in range(10):
+    motor.Move_X(i * 10)
+    time.sleep(1)
+for i in range(10):
+    motor.Move_Y(i * 10)
+    time.sleep(1)
+
+motor.Close()
