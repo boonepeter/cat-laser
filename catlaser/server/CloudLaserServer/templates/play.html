@@ -18,6 +18,9 @@
                         <!-- Set the MJPEG video stream URL in the image source below -->
                         <img src="{{ config['MJPEG_URL'] }}"/>
                     </div>
+                    <div>
+                      <button id="laser_toggle">Toggle laser</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,6 +59,9 @@
               // clicked X, Y position while playing.
               $('#video').click(function(ev) {
                 socket.emit('target', {x: ev.offsetX, y: ev.offsetY});
+              });
+              $('#laser_on').click(function(ev) {
+                socket.emit('laser', 'toggle');
               });
             });
         </script>

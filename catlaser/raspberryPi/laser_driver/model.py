@@ -7,10 +7,11 @@
 # Author: Tony DiCola
 import json
 import time
+import RPi.GPIO as GPIO
 import numpy as np
 
 class LaserModel(object):
-    def __init__(self, servos, servoMin, servoMax, servoCenter):
+    def __init__(self, servos, servoMin, servoMax, servoCenter, laser_pin):
         self.servos = servos
         self.servoMin = servoMin
         self.servoMax = servoMax
@@ -20,8 +21,12 @@ class LaserModel(object):
         self.servoCalibration = None
         self.transform = None
         self.calibrationFile = 'calibration.json'
+        self.LaserPin = laser_pin
+        self.IsLaserOn = False
         self._loadCalibration()
         self._generateTransform()
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(laser_pin, GPIO.OUT)
 
     def setXAxis(self, value):
         self.xAxisValue = self._validateAxis(value)
@@ -70,6 +75,25 @@ class LaserModel(object):
                 return
             self.target(pos_tuple[0], pos_tuple[1])
             time.sleep(time_delay)
+    def Laser_On(self):
+        if self.IsLaserOn:
+            return
+        else:
+            GPIO.output(self.LaserPin, True)
+            self.IsLaserOn = True
+    def Laser_Off(self):
+        if self.IsLaserOn:
+            GPIO.output(self.LaserPin, False)
+            self.IsLaserOn = False
+        else:
+            return
+    def Toggle_Laser(self):
+        if self.IsLaserOn:
+            GPIO.output(self.LaserPin, False)
+            self.IsLaserOn = False
+        elif not self.IsLaserOn:
+            GPIO.output(self.LaserPin, True)
+            self.IsLaserOn = True
 
     def _validateAxis(self, value):
         """Validate servo value is within range of allowed values."""

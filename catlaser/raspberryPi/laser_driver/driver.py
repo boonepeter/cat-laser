@@ -25,13 +25,15 @@ SERVO_CENTER          = 200    # Center value for the servo, should be 0 degrees
 MQTT_SERVER           = 'localhost'  # MQTT server to connect to for receiving commands.
 MQTT_PORT             = 1883         # Port for the MQTT server.
 LASER_GPIO            = 23     # GPIO pin connected to a transistor that controls the laser on/off.
-TOPIC_TARGET          = 'catlaser/target' # MQTT topics used for controlling the laser.
+# MQTT topics used for controlling the laser.
+TOPIC_TARGET          = 'catlaser/target'
 TOPIC_RELATIVE        = 'catlaser/relative'
 TOPIC_PATH            = 'catlaser/path'
+TOPIC_LASER           = 'catlaser/laser'
 
 # Create servo and laser movement model.
 servos = servos.Servos(SERVO_I2C_ADDRESS, SERVO_XAXIS_CHANNEL, SERVO_YAXIS_CHANNEL, SERVO_PWM_FREQ)
-model = model.LaserModel(servos, SERVO_MIN, SERVO_MAX, SERVO_CENTER)
+model = model.LaserModel(servos, SERVO_MIN, SERVO_MAX, SERVO_CENTER, LASER_GPIO)
 
 
 # MQTT callbacks:
@@ -40,6 +42,9 @@ def on_connect(client, userdata, flags, rc):
     print('Connected to MQTT server!')
     # Subscribe to the laser targeting topic.
     client.subscribe(TOPIC_TARGET)
+    client.subscribe(TOPIC_PATH)
+    client.subscribe(TOPIC_RELATIVE)
+    client.subscribe(TOPIC_LASER)
 
 def on_message(client, userdata, msg):
     # Called when a MQTT message is received.
@@ -67,9 +72,17 @@ def on_message(client, userdata, msg):
         path_list = []
         for line in lines:
             result = parts.parse("{:d},{:d}", line)
-            if (result is not None:
+            if result is not None:
                 path_list.append((result[0], result[1]))
         model.target_path(path_list)
+    elif msg.topic == TOPIC_LASER:
+        mess = msg.payload.decode('ascii')
+        if mess == "ON":
+            model.Laser_On()
+        elif mess == "OFF":
+            model.Laser_Off()
+        else:
+            model.Toggle_Laser()
             
 
 
