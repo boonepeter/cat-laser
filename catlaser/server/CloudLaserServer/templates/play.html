@@ -11,14 +11,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
-                    <h2>Raspberry Pi Cat Laser - Play</h2>
+                    <h2>Play with Atherton and Sebastion</h2>
                     <h3 id="message1"></h3>
                     <h3 id="message2"></h3>
                     <div id="video">
                         <!-- Set the MJPEG video stream URL in the image source below -->
                         <img src="{{ config['MJPEG_URL'] }}"/>
                     </div>
-                   <button id="laser_toggle">Toggle laser</button>
                 </div>
             </div>
         </div>
@@ -36,10 +35,8 @@
                 console.log('Disconnected!');
               });
               socket.on('playtime', function(playtime) {
-                $('#message1').text('You are PLAYING! Click on video to aim laser...');
+                $('#message1').text('Click on video to aim laser...');
                 $('#message2').text('Play remaining: ' + playtime.toFixed(0) + ' seconds');
-                // Make the page text red when active.
-                $('body').css('color', '#FF0000');
               });
               socket.on('wait_position', function(position) {
                 $('#message1').text('You are waiting in line to play.')

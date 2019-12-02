@@ -69,6 +69,11 @@ def process_players():
         if active is not None:
             ip, remaining = active
             socketio.emit('playtime', remaining, room=ip)
+            publish.single("catlaser/target", "ON", 
+                hostname=app.config["MQTT_HOST"])
+        else:
+            publish.single("catlaser/target", "OFF", 
+                hostname=app.config["MQTT_HOST"])
         # Next update the game state, firing any start or end active player
         # callback when appropriate.
         laser_players.update(elapsed, start_active, end_active)
@@ -137,17 +142,8 @@ def target(message):
         print('Target: {0}, {1}'.format(x, y))
         publish.single("catlaser/target", "{0},{1}".format(x, y),
                        hostname=app.config['MQTT_HOST'])
-@socketio.on("laser")
-def laser(message):
-    ip = request.remote_addr
-    active = laser_players.active_player()
-    if active is None:
-        return
-    active_ip, remaining = active
-    if active_ip == ip and remaining >= 0.0:
-        print("Laser toggle")
-        publish.single("catlaser/laser", "toggle", 
-        hostname=app.config["MQTT_HOST"])
+        publish.single("catlaser/target", "ON", 
+            hostname=app.config["MQTT_HOST"])
 
 if __name__ == '__main__':
     socketio.run(app)
