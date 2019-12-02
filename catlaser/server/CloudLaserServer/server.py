@@ -147,7 +147,7 @@ def laser(message):
     if active_ip == ip and remaining >= 0.0:
         print("Laser toggle")
         publish.single("catlaser/laser", "toggle", 
-        hostname=app.config["MQTT_HOST"]))
+        hostname=app.config["MQTT_HOST"])
 
 if __name__ == '__main__':
     socketio.run(app)
