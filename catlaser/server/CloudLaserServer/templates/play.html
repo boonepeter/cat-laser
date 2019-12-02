@@ -61,7 +61,7 @@
                 socket.emit('target', {x: ev.offsetX, y: ev.offsetY});
               });
               $('#laser_on').click(function(ev) {
-                socket.emit('laser', 'toggle');
+                socket.emit('laser', {ev.text});
               });
             });
         </script>
