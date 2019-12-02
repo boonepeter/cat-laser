@@ -6,6 +6,7 @@
 # location to server x, y positions).
 # Author: Tony DiCola
 import json
+import time
 import numpy as np
 
 class LaserModel(object):
@@ -54,6 +55,21 @@ class LaserModel(object):
         servo = servo/servo[2]
         self.setXAxis(round(servo[0]))
         self.setYAxis(round(servo[1]))
+
+    def target_relative(self, x, y):
+        """Moves the servos a relative distance. This will handle the physical
+        controller movement"""
+        new_y = self.yAxisValue + y
+        new_x = self.xAxisValue + x
+        self.target(new_x, new_y)
+    
+    def target_path(self, position_list, time_delay=0.01):
+        """position_list is a list of tuples, which should be (x, y) position integers"""
+        for pos_tuple in position_list:
+            if len(pos_tuple) != 2:
+                return
+            self.target(pos_tuple[0], pos_tuple[1])
+            time.sleep(time_delay)
 
     def _validateAxis(self, value):
         """Validate servo value is within range of allowed values."""

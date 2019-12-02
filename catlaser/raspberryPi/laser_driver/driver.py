@@ -25,9 +25,9 @@ SERVO_CENTER          = 200    # Center value for the servo, should be 0 degrees
 MQTT_SERVER           = 'localhost'  # MQTT server to connect to for receiving commands.
 MQTT_PORT             = 1883         # Port for the MQTT server.
 LASER_GPIO            = 23     # GPIO pin connected to a transistor that controls the laser on/off.
-
-# MQTT topics used for controlling the laser.
-TOPIC_TARGET          = 'catlaser/target'
+TOPIC_TARGET          = 'catlaser/target' # MQTT topics used for controlling the laser.
+TOPIC_RELATIVE        = 'catlaser/relative'
+TOPIC_PATH            = 'catlaser/path'
 
 # Create servo and laser movement model.
 servos = servos.Servos(SERVO_I2C_ADDRESS, SERVO_XAXIS_CHANNEL, SERVO_YAXIS_CHANNEL, SERVO_PWM_FREQ)
@@ -53,6 +53,25 @@ def on_message(client, userdata, msg):
             # Got a valid pair of numbers, use the laser model to target that
             # position.
             model.target(result[0], result[1])
+    elif msg.topic == TOPIC_RELATIVE:
+        # Try to parse out two numbers from the payload.  These are the
+        # relative coordinates for the relative target command.
+        result = parse.parse('{:d},{:d}', msg.payload.decode('ascii'))
+        if result is not None:
+            # Got a valid pair of numbers, use the laser model to target that
+            # position.
+            model.target_relative(result[0], result[1])
+    elif msg.topic == TOPIC_PATH:
+        lines = msg.payload.decode("ascii")
+        lines = lines.split(";")
+        path_list = []
+        for line in lines:
+            result = parts.parse("{:d},{:d}", line)
+            if (result is not None:
+                path_list.append((result[0], result[1]))
+        model.target_path(path_list)
+            
+
 
 def on_disconnect(client, userdata, rc):
     # Called when disconnected by the MQTT server.  For now just prints out the
