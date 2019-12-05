@@ -40,7 +40,7 @@ class LaserModel(object):
 
     def target(self, x, y):
         """Transform screen coordinate position to servo coordinate position and move servos accordingly."""
-        if self.transform == None:
+        if self.transform is None:
             raise ValueError('Calibration not set!')
         screen = np.array([float(x), float(y), 1.0])
         servo = self.transform.dot(screen)
@@ -52,8 +52,10 @@ class LaserModel(object):
         """Validate servo value is within range of allowed values."""
         try:
             v = int(value)
-            if v < self.servoMin or v > self.servoMax:
-                raise ValueError()
+            if v < self.servoMin:
+                return self.servoMin
+            elif v > self.servoMax:
+                return self.servoMax
             return v
         except:
             raise ValueError('Invalid value! Must be a value between %i and %i.' % (self.servoMin, self.servoMax))
