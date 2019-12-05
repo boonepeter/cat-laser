@@ -53,7 +53,7 @@ class LaserModel(object):
 
     def target(self, x, y):
         """Transform screen coordinate position to servo coordinate position and move servos accordingly."""
-        if self.transform == None:
+        if self.transform is None:
             raise ValueError('Calibration not set!')
         screen = np.array([float(x), float(y), 1.0])
         servo = self.transform.dot(screen)
@@ -67,7 +67,7 @@ class LaserModel(object):
         new_y = self.yAxisValue + y
         new_x = self.xAxisValue + x
         self.target(new_x, new_y)
-    
+
     def target_path(self, position_list, time_delay=0.01):
         """position_list is a list of tuples, which should be (x, y) position integers"""
         for pos_tuple in position_list:
@@ -75,6 +75,7 @@ class LaserModel(object):
                 return
             self.target(pos_tuple[0], pos_tuple[1])
             time.sleep(time_delay)
+
     def Laser_On(self):
         if self.IsLaserOn:
             return

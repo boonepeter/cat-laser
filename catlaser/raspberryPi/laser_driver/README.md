@@ -19,6 +19,20 @@ Finally you must install the paho-mqtt client for Python 3 by running:
 
     sudo pip3 install paho-mqtt
 
+
+### Note:
+The following steps must be completed on the pi before the server works:
+Ensure mjpeg-streamer is running and exposing an MJPEG video stream of the Pi camera.
+
+- If your Pi is not directly accessible to the internet (i.e. if you're at home and the Pi is connected to a router) forward port 8080 from your router to the Raspberry Pi. This will allow outside users (like the cloud server) to access the video stream.
+
+- Ensure ssh is running to create a tunnel for port 1883 (MQTT) to this cloud server. On the Pi run the following command (you will need to adjust the -i option to point at the private key for connecting to your cloud server and specify the right username and address for the cloud server):
+
+ssh -nNT -L 1883:localhost:1883 -i /path/to/cloud/server/key.pem user@cloudserver &
+- This will run the SSH tunnel in the background and all the Pi to access the cloud server's MQTT server securely without a lot of certificate and SSL hassle.
+
+- Ensure the LaserDriver script is calibrated (using the LaserServer and copying over its calibration.json) and running.
+
 Now you are almost ready to run the laser driver code in this directory.  Before
 you run the code make sure to get a calibration.json file from the LaserServer
 directory.  Run the original laser server (see part 2) code and go through its
