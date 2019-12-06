@@ -9,9 +9,15 @@ import sys
 import threading
 import time
 
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_login import LoginManager
+from flask_login import login_required
 from flask import *
 from flask_socketio import *
 import paho.mqtt.publish as publish
+
+from form import LoginForm
 
 import config
 import players
@@ -20,7 +26,13 @@ import players
 # Initialize flask app
 app = Flask(__name__)
 app.config.from_object(config)
+login = LoginManager(app)
 socketio = SocketIO(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+login.login_view = "login"
+
+import user_model
 
 # Global state, keep an ordered dict of all the active players (i.e. people waiting to
 # play with the cat laser).  The key for each user is their IP address so multiple
@@ -63,27 +75,42 @@ def process_players():
         current = time.time()
         elapsed = current - last
         last = current
+        is_laser_on = False
         # First push out a message to the active player with their remaining
         # playtime.
         active = laser_players.active_player()
         if active is not None:
             ip, remaining = active
             socketio.emit('playtime', remaining, room=ip)
-            publish.single("catlaser/target", "ON", 
-                hostname=app.config["MQTT_HOST"])
+            if -is_laser_on:
+                publish.single("catlaser/target", "ON", 
+                    hostname=app.config["MQTT_HOST"])
+                is_laser_on = True
         else:
-            publish.single("catlaser/target", "OFF", 
-                hostname=app.config["MQTT_HOST"])
+            if is_laser_on:
+                publish.single("catlaser/target", "OFF", 
+                    hostname=app.config["MQTT_HOST"])
+                is_laser_on = False
         # Next update the game state, firing any start or end active player
         # callback when appropriate.
         laser_players.update(elapsed, start_active, end_active)
         # Wait a bit and repeat!
         socketio.sleep(0.25)
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flask.flash("Logged in success")
+        next = flask.request.args.get("next")
+        return flask.redirect(next or flask.url_for("index"))
+    return flask.render_template("login.html", form=form)
+
 
 # Flask routes & socket IO events:
 @app.route('/')
 @app.route('/spectate')
+@login_required
 def spectate():
     """Spectator mode displays video and a link to play."""
     return render_template('spectate.html')

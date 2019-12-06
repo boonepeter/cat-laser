@@ -47,3 +47,12 @@ for the Pi camera stream.
 
 Follow the README.md in the CloudLaserServer folder to setup the cloud laser
 server code.
+
+
+## Peter's notes
+Changed server.py
+
+```
+pip3 install flask-login flask-wtf flask-sqlalchemy flask-migrate
+```
+
