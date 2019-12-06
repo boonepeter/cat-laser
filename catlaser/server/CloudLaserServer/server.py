@@ -12,7 +12,7 @@ import time
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_login import login_required
+from flask_login import login_required, current_user, login_user
 from flask import *
 from flask_socketio import *
 import paho.mqtt.publish as publish
@@ -99,11 +99,20 @@ def process_players():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("/"))
     form = LoginForm()
     if form.validate_on_submit():
+        user = user_model.User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flask.flash("invalid password or username")
+            print("login unsuccessful")
+            return redirect(url_for("login"))
+        login_user(user, remember=form.remember_me.data)
         flask.flash("Logged in success")
+        print("login success")
         next = flask.request.args.get("next")
-        return flask.redirect(next or flask.url_for("index"))
+        return flask.redirect(next or flask.url_for("/"))
     return flask.render_template("login.html", form=form)
 
 
@@ -116,6 +125,7 @@ def spectate():
     return render_template('spectate.html')
 
 @app.route('/play')
+@login_required
 def play():
     """Play mode allows a user to wait in line for their turn to play."""
     return render_template('play.html')
