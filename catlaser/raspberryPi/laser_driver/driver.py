@@ -18,7 +18,7 @@ import RPi.GPIO as GPIO
 SERVO_I2C_ADDRESS     = 0x40   # I2C address of the PCA9685-based servo controller
 SERVO_XAXIS_CHANNEL   = 1      # Channel for the x axis rotation which controls laser up/down
 SERVO_YAXIS_CHANNEL   = 0      # Channel for the y axis rotation which controls laser left/right
-LASER_CHANNEL         = 3
+LASER_CHANNEL         = 5
 SERVO_PWM_FREQ        = 50     # PWM frequency for the servos in HZ (should be 50)
 SERVO_MIN             = 150    # Minimum rotation value for the servo, should be -90 degrees of rotation.
 SERVO_MAX             = 600    # Maximum rotation value for the servo, should be 90 degrees of rotation.
