@@ -6,7 +6,7 @@
 import Adafruit_PCA9685
 
 class Servos(object):
-    def __init__(self, i2cAddress, xAxisChannel, yAxisChannel, laserChannel pwmFreqHz):
+    def __init__(self, i2cAddress, xAxisChannel, yAxisChannel, laserChannel, pwmFreqHz):
         self.pwm = Adafruit_PCA9685.PCA9685(address=i2cAddress)
         self.pwm.set_pwm_freq(pwmFreqHz)
         self.xaxis = xAxisChannel
