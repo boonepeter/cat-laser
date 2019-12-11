@@ -106,9 +106,9 @@ class LaserModel(object):
         """Validate servo value is within range of allowed values."""
         v = int(value)
         if v < self.servoMin or v > self.servoMax:
-            return false
+            return False
         else:
-            return true
+            return True
 
     def _loadCalibration(self):
         """Load calibration data from disk."""
