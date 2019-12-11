@@ -16,10 +16,10 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = 'beth has two cats'
 
 # Set MJPEG_URL to the URL of the mjpeg-proxy stream that displays video:
-MJPEG_URL = 'http://50.16.5.232:8080/index1.jpg'
+MJPEG_URL = 'http://174.109.65.238:8080/?action=stream'
 
 # Amount of time (in seconds) each active player has to play:
-PLAYTIME_SECONDS = 120.0
+PLAYTIME_SECONDS = 300
 
 # Hostname for the MQTT server that the Pi will listen to for commands.
 MQTT_HOST = 'localhost'
