@@ -13,17 +13,18 @@ TOPIC_RELATIVE        = 'catlaser/relative'
 TOPIC_PATH            = 'catlaser/path'
 TOPIC_LASER           = 'catlaser/laser'
 
-#print("Welcome to the cat laser toy!")
-#print("- D-pad: Move")
-#print("- B: Laser on/off")
-#print("- L/R bumper: fast mode")
-#print("- Start: sleep")
-#print("- A: keep track of movement")
-#print("- X: play back movement")
+print("Welcome to the cat laser toy!")
+print("- D-pad: Move")
+print("- B: Laser on/off")
+print("- L/R bumper: fast mode")
+print("- Start: sleep")
+print("- A: keep track of movement")
+print("- X: play back movement")
 
 gamepad = InputDevice(CONTROLLER_LOCATION)
 
 move_list = []
+is_laser_on = True
 up = False
 down = False
 left = False
@@ -52,17 +53,17 @@ while True:
     x = 0
     y = 0
     if up:
-        y = 1
+        y = 30
     elif down:
-        y = -1
+        y = -30
     if left:
-        x = -1
+        x = -30
     elif right:
-        x = 1
+        x = 30
     if (x != 0) or (y != 0):
         if l_trig or r_trig:
-            x *= 4
-            y *= 4
+            x *= 2
+            y *= 2
         publish.single(TOPIC_RELATIVE, f"{x},{y}", hostname=MQTT_HOST)
     if keep_track and (x != 0 or y != 0):
         move_list.append((x, y, True))
@@ -93,10 +94,12 @@ while True:
                         play_moves = True
                 elif event.code == 290: # B button
                     if event.value == 1:
-                        if testlaser.Is_Laser_On:
-                            testlaser.Laser_Off()
+                        if is_laser_on:
+                            publish.single(TOPIC_LASER, LASER_OFF, hostname=MQTT_HOST)
+                            is_laser_on = False
                         else:
-                            testlaser.Laser_On()                    
+                            is_laser_on = True
+                            publish.single(TOPIC_LASER, LASER_ON, hostname=MQTT_HOST)
                 elif event.code == 289: # A button
                     if event.value == 1:
                         keep_track = True

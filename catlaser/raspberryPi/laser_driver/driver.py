@@ -84,7 +84,6 @@ def on_message(client, userdata, msg):
             model.Laser_Off()
         else:
             model.Toggle_Laser()
-            
 
 
 def on_disconnect(client, userdata, rc):

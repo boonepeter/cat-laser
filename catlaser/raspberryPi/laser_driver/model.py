@@ -25,6 +25,8 @@ class LaserModel(object):
         self.IsLaserOn = False
         self._loadCalibration()
         self._generateTransform()
+        self._screen_x = 0
+        self._screen_y = 0
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(laser_pin, GPIO.OUT)
 
@@ -58,14 +60,18 @@ class LaserModel(object):
         screen = np.array([float(x), float(y), 1.0])
         servo = self.transform.dot(screen)
         servo = servo/servo[2]
-        self.setXAxis(round(servo[0]))
-        self.setYAxis(round(servo[1]))
+        if x != self._screen_x:
+            self.setXAxis(round(servo[0]))
+        if y != self._screen_y:
+            self.setYAxis(round(servo[1]))
+        self._screen_x = x
+        self._screen_y = y
 
     def target_relative(self, x, y):
         """Moves the servos a relative distance. This will handle the physical
         controller movement"""
-        new_y = self.yAxisValue + y
-        new_x = self.xAxisValue + x
+        new_y = self._screen_y + y
+        new_x = self._screen_x + x
         self.target(new_x, new_y)
 
     def target_path(self, position_list, time_delay=0.01):
@@ -74,7 +80,6 @@ class LaserModel(object):
             if len(pos_tuple) != 2:
                 return
             self.target(pos_tuple[0], pos_tuple[1])
-            time.sleep(time_delay)
 
     def Laser_On(self):
         if self.IsLaserOn:
