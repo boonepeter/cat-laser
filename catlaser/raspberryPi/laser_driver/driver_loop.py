@@ -163,7 +163,7 @@ while True:
         if l_trig or r_trig:
             x *= 2
             y *= 2
-        publish.single(TOPIC_RELATIVE, f"{x},{y}", hostname=MQTT_HOST)
+        model.target_relative(x, y)
     if keep_track and (x != 0 or y != 0):
         move_list.append((x, y, True))
     if play_moves:
