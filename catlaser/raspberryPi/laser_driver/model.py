@@ -65,6 +65,7 @@ class LaserModel(object):
             self.setXAxis(round(servo[0]))
         if y != self._screen_y:
             self.setYAxis(round(servo[1]))
+        print(f"targeting: {x}, {y}")
         self._screen_x = x
         self._screen_y = y
 

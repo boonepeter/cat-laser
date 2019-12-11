@@ -113,7 +113,7 @@ client.connect(MQTT_SERVER, MQTT_PORT, 60)
 # them appropriately with the callbacks above.  The loop_forever call will never
 # return!
 print('Press Ctrl-C to quit...')
-client.loop_start()
+client.loop_forever()
 
 print("Welcome to the cat laser toy!")
 print("- D-pad: Move")
