@@ -23,7 +23,7 @@ LASER_CHANNEL         = 5
 SERVO_PWM_FREQ        = 50     # PWM frequency for the servos in HZ (should be 50)
 SERVO_MIN             = 150    # Minimum rotation value for the servo, should be -90 degrees of rotation.
 SERVO_MAX             = 600    # Maximum rotation value for the servo, should be 90 degrees of rotation.
-SERVO_CENTER          = 200    # Center value for the servo, should be 0 degrees of rotation.
+SERVO_CENTER          = 400    # Center value for the servo, should be 0 degrees of rotation.
 MQTT_SERVER           = 'localhost'  # MQTT server to connect to for receiving commands.
 MQTT_PORT             = 1883         # Port for the MQTT server.
 LASER_GPIO            = 23     # GPIO pin connected to a transistor that controls the laser on/off.
@@ -122,7 +122,7 @@ print("- L/R bumper: fast mode")
 print("- Start: sleep")
 print("- A: keep track of movement")
 print("- X: play back movement")
-
+model.target(305, 305)
 move_list = []
 is_laser_on = True
 up = False

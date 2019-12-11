@@ -25,8 +25,8 @@ class LaserModel(object):
         self.IsLaserOn = False
         self._loadCalibration()
         self._generateTransform()
-        self._screen_x = 0
-        self._screen_y = 0
+        self._screen_x = servoCenter
+        self._screen_y = servoCenter
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(laser_pin, GPIO.OUT)
 
