@@ -8,10 +8,12 @@ import sys
 
 import model
 import servos
+
 import paho.mqtt.client as mqtt
 import parse
 import RPi.GPIO as GPIO
 
+from evdev import InputDevice, categorize, ecodes
 
 # Configuration:
 SERVO_I2C_ADDRESS     = 0x40   # I2C address of the PCA9685-based servo controller
@@ -31,11 +33,12 @@ TOPIC_RELATIVE        = 'catlaser/relative'
 TOPIC_PATH            = 'catlaser/path'
 TOPIC_LASER           = 'catlaser/laser'
 
+CONTROLLER_LOCATION = "/dev/input/event0"
+
 # Create servo and laser movement model.
 servos = servos.Servos(SERVO_I2C_ADDRESS, SERVO_XAXIS_CHANNEL, SERVO_YAXIS_CHANNEL, LASER_CHANNEL, SERVO_PWM_FREQ)
 model = model.LaserModel(servos, SERVO_MIN, SERVO_MAX, SERVO_CENTER, LASER_GPIO)
-
-
+gamepad = InputDevice(CONTROLLER_LOCATION)
 
 # MQTT callbacks:
 def on_connect(client, userdata, flags, rc):
@@ -84,6 +87,7 @@ def on_message(client, userdata, msg):
             model.Laser_Off()
         else:
             model.Toggle_Laser()
+            
 
 
 def on_disconnect(client, userdata, rc):
@@ -109,4 +113,133 @@ client.connect(MQTT_SERVER, MQTT_PORT, 60)
 # them appropriately with the callbacks above.  The loop_forever call will never
 # return!
 print('Press Ctrl-C to quit...')
-client.loop_forever()
+client.loop_start()
+
+print("Welcome to the cat laser toy!")
+print("- D-pad: Move")
+print("- B: Laser on/off")
+print("- L/R bumper: fast mode")
+print("- Start: sleep")
+print("- A: keep track of movement")
+print("- X: play back movement")
+
+move_list = []
+is_laser_on = True
+up = False
+down = False
+left = False
+right = False
+to_break = False
+l_trig = False
+r_trig = False
+change_laser_on = False
+keep_track = False
+play_moves = False
+while True:
+    if to_break:
+        while to_break:
+            time.sleep(0.5)
+            try:
+                events = gamepad.read()
+                for event in events:
+                    if event.type == ecodes.EV_KEY:
+                        if event.code == 297: #START
+                            if event.value == 1:
+                                to_break = False
+            except BlockingIOError:
+                #do nothing
+                pass
+    x = 0
+    y = 0
+    if up:
+        y = 30
+    elif down:
+        y = -30
+    if left:
+        x = -30
+    elif right:
+        x = 30
+    if (x != 0) or (y != 0):
+        if l_trig or r_trig:
+            x *= 2
+            y *= 2
+        publish.single(TOPIC_RELATIVE, f"{x},{y}", hostname=MQTT_HOST)
+    if keep_track and (x != 0 or y != 0):
+        move_list.append((x, y, True))
+    if play_moves:
+        for ex, why, on in move_list:
+            if on:
+                model.Laser_On()
+            else:
+                model.Laser_Off()
+            model.target_relative(ex, why)
+        play_moves = False
+    if change_laser_on:
+        if is_laser_on:
+            model.Laser_On()
+        else:
+            model.Laser_Off()
+        change_laser_on = False
+    try:
+        events = gamepad.read()
+        for event in events:
+            if event.type == ecodes.EV_KEY:
+                if event.code == 296: # SELECT
+                    #print("Select")
+                    pass
+                elif event.code == 297: #START
+                    if event.value == 1:
+                        to_break = True
+                elif event.code == 291: # Y button
+                    #print("Y")
+                    pass
+                elif event.code == 288: # X button
+                    if event.value == 1:
+                        play_moves = True
+                elif event.code == 290: # B button
+                    if event.value == 1:
+                        if is_laser_on:
+                            is_laser_on = False
+                            change_laser_on = True
+                        else:
+                            is_laser_on = True
+                            change_laser_on = True
+                elif event.code == 289: # A button
+                    if event.value == 1:
+                        keep_track = True
+                    elif event.value == 0:
+                        keep_track = False
+                elif event.code == 293: # Right Trigger
+                    if event.value == 1:
+                        r_trig = True
+                    elif event.value == 0:
+                        r_trig = False
+                elif event.code == 292: # Left trigger
+                    if event.value == 1:
+                        l_trig = True
+                    elif event.value == 0:
+                        l_trig = False
+            elif event.type == ecodes.EV_ABS:
+                if event.code == 0: # X direction
+                    if event.value == 0: #Left down
+                        left = True
+                        right = False
+                    if event.value == 127:
+                        left = False
+                        right = False
+                    elif event.value == 255: #Right down
+                        right = True
+                        left = False
+                elif event.code == 1: #Y direction
+                    if event.value == 0: #up direction
+                        down = True
+                        up = False
+                    elif event.value == 127:
+                        up = False
+                        down = False
+                    elif event.value == 255: #down direction
+                        down = False
+                        up = True
+    except BlockingIOError:
+        #do nothing
+        pass
