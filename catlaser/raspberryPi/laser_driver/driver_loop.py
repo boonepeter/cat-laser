@@ -152,13 +152,13 @@ while True:
     x = 0
     y = 0
     if up:
-        y = 30
+        y = 10
     elif down:
-        y = -30
+        y = -10
     if left:
-        x = -30
+        x = -10
     elif right:
-        x = 30
+        x = 10
     if (x != 0) or (y != 0):
         if l_trig or r_trig:
             x *= 2

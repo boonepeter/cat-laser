@@ -31,15 +31,16 @@ class LaserModel(object):
         GPIO.setup(laser_pin, GPIO.OUT)
 
     def setXAxis(self, value):
-        self.xAxisValue = self._validateAxis(value)
-        self.servos.setXAxis(self.xAxisValue)
-
+        if self._validateAxis(value):
+            self.xAxisValue = self._validateAxis(value)
+            self.servos.setXAxis(self.xAxisValue)
     def getXAxis(self):
         return self.xAxisValue
 
     def setYAxis(self, value):
-        self.yAxisValue = self._validateAxis(value)
-        self.servos.setYAxis(self.yAxisValue)
+        if self._validateAxis(value):
+            self.yAxisValue = self._validateAxis(value)
+            self.servos.setYAxis(self.yAxisValue)
 
     def getYAxis(self):
         return self.yAxisValue
@@ -103,13 +104,11 @@ class LaserModel(object):
 
     def _validateAxis(self, value):
         """Validate servo value is within range of allowed values."""
-        try:
-            v = int(value)
-            if v < self.servoMin or v > self.servoMax:
-                raise ValueError()
-            return v
-        except:
-            raise ValueError('Invalid value! Must be a value between %i and %i.' % (self.servoMin, self.servoMax))
+        v = int(value)
+        if v < self.servoMin or v > self.servoMax:
+            return false
+        else:
+            return true
 
     def _loadCalibration(self):
         """Load calibration data from disk."""
