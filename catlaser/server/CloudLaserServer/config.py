@@ -16,7 +16,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SECRET_KEY = 'beth has two cats'
 
 # Set MJPEG_URL to the URL of the mjpeg-proxy stream that displays video:
-MJPEG_URL = 'http://174.109.65.238:8080/?action=stream'
+MJPEG_URL = 'http://50.16.5.232:8080/index1.jpg'
 
 # Amount of time (in seconds) each active player has to play:
 PLAYTIME_SECONDS = 300
