@@ -1,0 +1,9 @@
+[Unit]
+Description=mjpeg-proxy server
+
+[Service]
+ExecStart=/home/ubuntu/mjpeg-proxy/start.sh
+WorkingDirectory=/home/ubuntu/mjpeg-proxy/
+
+[Install]
+WantedBy=multi-user.target
