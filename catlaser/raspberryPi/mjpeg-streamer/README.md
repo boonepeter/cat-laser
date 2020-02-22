@@ -22,7 +22,15 @@ To install run the following commands on the Pi:
 You can then run the tool manually with the following command in the same
 mjpeg-streamer-experimental directory:
 
-    LD_LIBRARY_PATH=. ./mjpg_streamer -i "./input_raspicam.so -vf -fps 30" -o "./output_http.so -w ./www"
+    LD_LIBRARY_PATH=. ./mjpg_streamer -i "./input_raspicam.so -vf -hf -fps 30" -o "./output_http.so -w ./www -c username:password"
+
+The `-c` parameter sets the required username and password to access the stream. 
+You can send these in the HTTP request header. If checking the stream from a browser, you can supply them in the url:
+`http://username:password@example.com`. This functionality has been taken out of some browsers.
+
+This is not the most secure...someone could probably grab the username and password if they really tried. It at least secures the server from randos.
+
+I need to require credentials in the mjpeg-proxy server. 
 
 Notice the -vf and -fps 30 options for the input_raspicam.so plugin.  The -vf
 option performs a vertical flip of the camera output which may or may not be required
