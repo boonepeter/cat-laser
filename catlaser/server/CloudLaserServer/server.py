@@ -11,6 +11,8 @@ import time
 
 from flask import *
 from flask_socketio import *
+from flask_oidc import OpenIDConnect
+
 import paho.mqtt.publish as publish
 
 import config
@@ -18,8 +20,17 @@ import players
 
 
 # Initialize flask app
+print(__name__)
 app = Flask(__name__)
 app.config.from_object(config)
+app.config.update({
+    'OIDC_CLIENT_SECRETS': './client_secrets.json',
+    'OIDC_ID_TOKEN_COOKIE_SECURE': False,
+    'OIDC_SCOPES': ["openid", "profile", "email"],
+    'OVERWRITE_REDIRECT_URI': 'http://127.0.0.1:8080/',
+})
+app.secret_key = "beth has two cats"
+oidc = OpenIDConnect(app)
 socketio = SocketIO(app)
 
 # Global state, keep an ordered dict of all the active players (i.e. people waiting to
@@ -84,14 +95,21 @@ def process_players():
 # Flask routes & socket IO events:
 @app.route('/')
 @app.route('/spectate')
+@oidc.require_login
 def spectate():
     """Spectator mode displays video and a link to play."""
-    return render_template('spectate.html')
+    return render_template('spectate.html', oidc=oidc)
 
 @app.route('/play')
+@oidc.require_login
 def play():
     """Play mode allows a user to wait in line for their turn to play."""
     return render_template('play.html')
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    oidc.logout()
+    return redirect(url_for("/"))
 
 @socketio.on('connect')
 def connect():
