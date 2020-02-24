@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect
 from flask_oidc import OpenIDConnect
-
+from config import STREAM_URL
 app = Flask(__name__)
 app.config.update({
     'SECRET_KEY': 'SomethingNotEntirelySecret',
@@ -27,7 +27,7 @@ def login():
 @app.route('/spectate')
 @oidc.require_login
 def spectate():
-    return render_template("test.html", oidc=oidc)
+    return render_template("test.html", STREAM_URL=STREAM_URL, oidc=oidc)
 
 @app.route("/profile")
 @oidc.require_login

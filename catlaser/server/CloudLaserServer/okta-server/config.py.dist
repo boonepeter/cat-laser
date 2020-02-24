@@ -1,0 +1,3 @@
+# rename to config.py and change this url value.
+
+STREAM_URL = "http://xx.xx.xx.xx/?action=stream" 
